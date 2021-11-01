@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Out of Ink PDF Recolourer</title>
+    </head>
+    <body>
+        <h1>Out of Ink PDF Recolourer</h1>
+        <h2>Channel Swaps</h2>
+        <div id="swaps-container"></div>
+        <h2>Input</h2>
+        <div id="pdf-container">
+            <label for="input-pdf">Input PDF:</label>
+            <input type="file" id="input-pdf" name="input-pdf" accept="application/pdf">
+            <button id="convert-button" disabled>Export</button>
+            <span id="progress-text"></span>
+        </div>
+        <div>
+            <input type="range" min="1" max="10" id="quality-slider" value="4">
+            <span id="quality-text">Export Quality 4/10</span>
+        </div>
+        <h2>Preview</h2>
+        <div>
+            <input type="range" min="1" id="page-slider" value="1" disabled>
+            <span id="page-text">Page -1/-1</span>
+        </div>
+        <div>
+            <canvas id="source-canvas"></canvas>
+            <canvas id="target-canvas"></canvas>
+        </div>
+
+        <script src="https://mozilla.github.io/pdf.js/build/pdf.js"></script>
+        <script src="https://unpkg.com/pdf-lib@1.17.0/dist/pdf-lib.min.js"></script>
+        <script src="script.js"></script>
+    </body>
+</html>
