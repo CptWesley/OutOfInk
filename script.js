@@ -8,7 +8,10 @@ const pageText = document.getElementById('page-text');
 const qualitySlider = document.getElementById('quality-slider');
 const qualityText = document.getElementById('quality-text');
 const progressText = document.getElementById('progress-text');
+const resetButton = document.getElementById('reset-button');
 const PDFJS = window['pdfjs-dist/build/pdf'];
+
+const defaultQuality = 4;
 
 let pdf = undefined;
 let pdfFileName = undefined;
@@ -27,14 +30,21 @@ inputPdf.addEventListener('change', e => {
     });
 });
 
+resetButton.addEventListener('click', resetSettings);
+
 pageSlider.addEventListener('input', loadSourceCanvas);
 convertButton.addEventListener('click', exportPdf);
 
-qualitySlider.addEventListener('input', () => qualityText.innerText = 'Export Quality ' + qualitySlider.value + '/' + qualitySlider.max);
+qualitySlider.addEventListener('input', () => {
+    qualityText.innerText = 'Export Quality ' + qualitySlider.value + '/' + qualitySlider.max;
+    saveSettings();
+});
 
 const cyanSelector = createSelector('cyan');
 const magentaSelector = createSelector('magenta');
 const yellowSelector = createSelector('yellow');
+
+loadSettings();
 
 function createSelector(input) {
     const id = 'selector-' + input;
@@ -59,7 +69,10 @@ function createSelector(input) {
     el.appendChild(createOption('black', 'Black (Cyan + Magenta + Yellow)'));
     el.value = input;
 
-    el.addEventListener('change', loadSourceCanvas);
+    el.addEventListener('change', () => {
+        saveSettings();
+        loadSourceCanvas();
+    });
 
     return el;
 }
@@ -314,4 +327,38 @@ function savePdf(bytes) {
     a.click();
     URL.revokeObjectURL(a.href);
     setProgress('Done.');
+}
+
+function load(key, defaultValue) {
+    const json = localStorage.getItem(key);
+    if (!json) {
+        return defaultValue;
+    }
+
+    return JSON.parse(json);
+}
+
+function store(key, value) {
+    const json = JSON.stringify(value);
+    localStorage.setItem(key, json);
+}
+
+function loadSettings() {
+    cyanSelector.value = load('cyan-channel', 'cyan');
+    magentaSelector.value = load('magenta-channel', 'magenta');
+    yellowSelector.value = load('yellow-channel', 'yellow');
+    qualitySlider.value = load('quality', defaultQuality);
+    qualityText.innerText = 'Export Quality ' + qualitySlider.value + '/' + qualitySlider.max;
+}
+
+function saveSettings() {
+    store('cyan-channel', cyanSelector.value);
+    store('magenta-channel', magentaSelector.value);
+    store('yellow-channel', yellowSelector.value);
+    store('quality', parseInt(qualitySlider.value));
+}
+
+function resetSettings() {
+    localStorage.clear();
+    loadSettings();
 }
