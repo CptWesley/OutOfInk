@@ -97,6 +97,10 @@ function correctImageData(data) {
 }
 
 function correctCmykColor(color) {
+    if (color.cyan === 0 && color.magenta === 0 && color.yellow === 0 && color.black === 0) {
+        return color;
+    }
+
     const result = {
         cyan: 0,
         magenta: 0,
