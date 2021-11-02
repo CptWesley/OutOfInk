@@ -53,7 +53,10 @@ function createSelector(input) {
     el.appendChild(createOption('cyan', 'Cyan'));
     el.appendChild(createOption('magenta', 'Magenta'));
     el.appendChild(createOption('yellow', 'Yellow'));
-    el.appendChild(createOption('black', 'Black'));
+    el.appendChild(createOption('cyan+magenta', 'Cyan + Magenta'));
+    el.appendChild(createOption('cyan+yellow', 'Cyan + Yellow'));
+    el.appendChild(createOption('magenta+yellow', 'Magenta + Yellow'));
+    el.appendChild(createOption('black', 'Black (Cyan + Magenta + Yellow)'));
     el.value = input;
 
     el.addEventListener('change', loadSourceCanvas);
@@ -102,9 +105,17 @@ function correctCmykColor(color) {
         none: 0,
     };
 
-    result[cyanSelector.value] += color.cyan + color.black;
-    result[magentaSelector.value] += color.magenta + color.black;
-    result[yellowSelector.value] += color.yellow + color.black;
+    for (const channel of cyanSelector.value.split('+')) {
+        result[channel] += color.cyan + color.black;
+    }
+
+    for (const channel of magentaSelector.value.split('+')) {
+        result[channel] += color.magenta + color.black;
+    }
+
+    for (const channel of yellowSelector.value.split('+')) {
+        result[channel] += color.yellow + color.black;
+    }
 
     result.cyan = Math.max(0, Math.min(1, result.cyan));
     result.magenta = Math.max(0, Math.min(1, result.magenta));
