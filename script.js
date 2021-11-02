@@ -21,7 +21,7 @@ inputPdf.addEventListener('change', e => {
     readFileAsBytes(file, (bytes) => {
         PDFJS.getDocument({data: bytes}).promise.then(loadedPdf => {
             pdf = loadedPdf;
-            loadSourceCanvas();
+            loadPreview();
             pageSlider.max = pdf.numPages;
             pageSlider.value = 1;
             convertButton.disabled = false;
@@ -32,7 +32,7 @@ inputPdf.addEventListener('change', e => {
 
 resetButton.addEventListener('click', resetSettings);
 
-pageSlider.addEventListener('input', loadSourceCanvas);
+pageSlider.addEventListener('input', loadPreview);
 convertButton.addEventListener('click', exportPdf);
 
 qualitySlider.addEventListener('input', () => {
@@ -71,7 +71,7 @@ function createSelector(input) {
 
     el.addEventListener('change', () => {
         saveSettings();
-        loadSourceCanvas();
+        loadPreview();
     });
 
     return el;
@@ -85,7 +85,7 @@ function createOption(value, name) {
     return el;
 }
 
-function loadSourceCanvas() {
+function loadPreview() {
     if (!pdf) {
         return;
     }
@@ -361,4 +361,5 @@ function saveSettings() {
 function resetSettings() {
     localStorage.clear();
     loadSettings();
+    loadPreview();
 }
