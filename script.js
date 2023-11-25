@@ -16,6 +16,8 @@ const defaultQuality = 4;
 let pdf = undefined;
 let pdfFileName = undefined;
 
+let bg = undefined;
+
 inputPdf.addEventListener('change', e => {
     const file = e.target.files[0];
     readFileAsBytes(file, (bytes) => {
@@ -100,6 +102,7 @@ function loadPreview() {
 }
 
 function correctImageData(data) {
+    bg = undefined;
     for (let x = 0; x < data.width; x++) {
         for (let y = 0; y < data.height; y++) {
             const cmyk = getPixelCmyk(data, x, y);
@@ -110,8 +113,12 @@ function correctImageData(data) {
 }
 
 function correctCmykColor(color) {
-    if (color.cyan === 0 && color.magenta === 0 && color.yellow === 0 && color.black === 0) {
-        return color;
+    if (!bg) {
+        bg = color;
+    }
+
+    if (color.cyan === bg.cyan && color.magenta === bg.magenta && color.yellow === bg.yellow && color.black === bg.black) {
+        return cmyk(0, 0, 0, 0);
     }
 
     const result = {
